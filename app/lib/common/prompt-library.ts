@@ -1,5 +1,6 @@
 import { getSystemPrompt } from './prompts/prompts';
 import optimized from './prompts/optimized';
+import ugcCharacter from './prompts/ugc-character';
 
 export interface PromptOptions {
   cwd: string;
@@ -25,6 +26,11 @@ export class PromptLibrary {
       label: 'Optimized Prompt (experimental)',
       description: 'an Experimental version of the prompt for lower token usage',
       get: (options) => optimized(options),
+    },
+    'ugc-nova': {
+      label: 'Nova — UGC Character',
+      description: 'Nova Voss: photorealistic 3D CGI digital creator & style icon. Confident Black woman with vitiligo, short black bob, minimalist aesthetic. Built for UGC content creation across fashion, tech, and lifestyle.',
+      get: (options) => ugcCharacter(options),
     },
   };
   static getList() {
