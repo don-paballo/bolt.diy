@@ -1,6 +1,7 @@
 import { Composition, staticFile } from "remotion";
 import { Scene, myCompSchema } from "./Scene";
 import { getMediaMetadata } from "./helpers/get-media-metadata";
+import { ProxyLabsAd } from "./ProxyLabsAd";
 
 // Welcome to the Remotion Three Starter Kit!
 // Two compositions have been created, showing how to use
@@ -20,6 +21,14 @@ import { getMediaMetadata } from "./helpers/get-media-metadata";
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="ProxyLabsAd"
+        component={ProxyLabsAd}
+        fps={24}
+        durationInFrames={432}
+        width={1080}
+        height={1920}
+      />
       <Composition
         id="Scene"
         component={Scene}
