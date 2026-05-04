@@ -1,0 +1,27 @@
+{
+  "name": "proxywebs-remotion-ads",
+  "version": "1.0.0",
+  "description": "Remotion video ads for proxywebs.co.za",
+  "private": true,
+  "scripts": {
+    "start": "remotion studio",
+    "build": "remotion render ProxWebsAd out/proxywebs-ad.mp4",
+    "render": "remotion render",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.290",
+    "@remotion/eslint-config": "4.0.290",
+    "remotion": "4.0.290",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.1",
+    "@types/react-dom": "18.3.1",
+    "typescript": "5.4.5"
+  },
+  "remotion": {
+    "entryPoint": "src/index.ts"
+  }
+}
