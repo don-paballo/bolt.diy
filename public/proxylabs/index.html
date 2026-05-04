@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proxy Labs — AI Automation Systems</title>
+  <meta name="description" content="We build intelligent automation systems that eliminate manual work, reduce costs by 60–80%, and scale your business exponentially." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050507;
+      --bg2: #0a0a0f;
+      --bg3: #0f0f18;
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.15);
+      --text: #f0f0f5;
+      --text-muted: #7a7a9a;
+      --text-dim: #4a4a6a;
+      --accent: #6c63ff;
+      --accent2: #a78bfa;
+      --accent3: #38bdf8;
+      --green: #10b981;
+      --red: #f87171;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.3;
+    }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 100px 0; }
+
+    /* ── TYPOGRAPHY ── */
+    h1, h2, h3, h4 { line-height: 1.15; letter-spacing: -0.02em; }
+    .label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--accent2);
+    }
+
+    /* ── GRADIENT TEXT ── */
+    .grad {
+      background: linear-gradient(135deg, #fff 0%, var(--accent2) 50%, var(--accent3) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      font-family: var(--sans);
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 32px rgba(108,99,255,0.35);
+    }
+    .btn-primary:hover {
+      background: #7c73ff;
+      box-shadow: 0 0 48px rgba(108,99,255,0.5);
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover {
+      border-color: var(--border-hover);
+      background: rgba(255,255,255,0.04);
+    }
+    .btn-wa {
+      background: #128c3e;
+      color: #fff;
+      box-shadow: 0 0 24px rgba(18,140,62,0.3);
+    }
+    .btn-wa:hover {
+      background: #15a349;
+      box-shadow: 0 0 36px rgba(18,140,62,0.45);
+      transform: translateY(-1px);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      background: rgba(5,5,7,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    .nav-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+    }
+    .nav-logo span { color: var(--accent2); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s;
+      letter-spacing: 0.04em;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { display: flex; align-items: center; gap: 12px; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(108,99,255,0.12) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(108,99,255,0.12);
+      border: 1px solid rgba(108,99,255,0.3);
+      border-radius: 100px;
+      padding: 6px 14px 6px 8px;
+      margin-bottom: 32px;
+    }
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+    }
+    .hero-badge span {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent2);
+      letter-spacing: 0.1em;
+    }
+    .hero-h1 {
+      font-size: clamp(42px, 7vw, 80px);
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-muted);
+      max-width: 560px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 64px; }
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .hero-stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .hero-stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── TRUST BAR ── */
+    .trust-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+      background: var(--bg2);
+    }
+    .trust-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+    }
+    .trust-item svg { color: var(--accent2); flex-shrink: 0; }
+    .trust-sep { width: 1px; height: 16px; background: var(--border); }
+
+    /* ── BEFORE / AFTER ── */
+    .ba-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .ba-col {
+      padding: 40px;
+      background: var(--bg2);
+    }
+    .ba-col.after { background: var(--bg3); }
+    .ba-col-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+    .ba-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .ba-tag.before { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+    .ba-tag.after { background: rgba(16,185,129,0.1); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
+    .ba-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .ba-row:last-child { border-bottom: none; }
+    .ba-row-label { color: var(--text-muted); }
+    .ba-row-value { font-weight: 600; font-family: var(--mono); }
+    .ba-row-value.bad { color: var(--red); }
+    .ba-row-value.good { color: var(--green); }
+
+    /* ── CARDS (services) ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .service-card {
+      background: var(--bg2);
+      padding: 40px;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent3));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .service-card:hover { background: var(--bg3); }
+    .service-card:hover::before { opacity: 1; }
+    .service-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(108,99,255,0.1);
+      border: 1px solid rgba(108,99,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+    .service-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .service-roi {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent2);
+      background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.15);
+      border-radius: 4px;
+      padding: 4px 10px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    .service-desc { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 20px; }
+    .service-features { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .service-features li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .service-features li::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent2);
+      flex-shrink: 0;
+    }
+
+    /* ── METRICS ── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .metric-card {
+      background: var(--bg2);
+      padding: 40px 32px;
+      text-align: center;
+    }
+    .metric-value {
+      font-size: 52px;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .metric-label { font-size: 13px; color: var(--text-muted); }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .testimonial-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .testimonial-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+    .stars { display: flex; gap: 4px; margin-bottom: 16px; color: #fbbf24; font-size: 14px; }
+    .testimonial-text { font-size: 15px; line-height: 1.7; color: var(--text-muted); margin-bottom: 24px; }
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+    .testimonial-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .testimonial-name { font-size: 14px; font-weight: 600; }
+    .testimonial-role { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .pricing-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .pricing-card.featured {
+      background: var(--bg3);
+      border-color: var(--accent);
+      box-shadow: 0 0 48px rgba(108,99,255,0.15);
+    }
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 4px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .pricing-tier {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+    .pricing-name { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+    .pricing-price {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+    .pricing-price span { font-size: 14px; font-weight: 400; color: var(--text-muted); vertical-align: middle; }
+    .pricing-perf {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+    .pricing-divider { height: 1px; background: var(--border); margin-bottom: 24px; }
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .pricing-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; }
+    .pricing-features li .check { color: var(--green); flex-shrink: 0; margin-top: 1px; }
+    .pricing-features li .cross { color: var(--text-dim); flex-shrink: 0; margin-top: 1px; }
+
+    /* ── COMPARISON TABLE ── */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 40px;
+    }
+    .comparison-table th, .comparison-table td {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .comparison-table th {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      background: var(--bg2);
+    }
+    .comparison-table th:not(:first-child) { text-align: center; }
+    .comparison-table td:not(:first-child) { text-align: center; }
+    .comparison-table tr:last-child td { border-bottom: none; }
+    .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .comparison-table .feat-col { color: var(--text-muted); font-size: 13px; }
+    .check-icon { color: var(--green); }
+    .cross-icon { color: var(--text-dim); }
+    .partial { color: var(--accent2); font-size: 12px; font-family: var(--mono); }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 1px; }
+    .faq-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .faq-q {
+      padding: 20px 24px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      font-weight: 500;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .faq-q:hover { background: rgba(255,255,255,0.03); }
+    .faq-icon {
+      font-size: 20px;
+      color: var(--text-dim);
+      transition: transform 0.3s;
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--accent2); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+    .faq-item.open .faq-a { max-height: 500px; padding: 0 24px 20px; }
+
+    /* ── TEAM ── */
+    .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 700px; margin: 0 auto; }
+    .team-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .team-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+    .team-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent3) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      margin: 0 auto 16px;
+    }
+    .team-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .team-role { font-family: var(--mono); font-size: 11px; color: var(--accent2); letter-spacing: 0.1em; margin-bottom: 12px; }
+    .team-bio { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      background: linear-gradient(135deg, rgba(108,99,255,0.08) 0%, rgba(56,189,248,0.05) 100%);
+      border: 1px solid rgba(108,99,255,0.2);
+      border-radius: 24px;
+      padding: 80px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(108,99,255,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 900; margin-bottom: 16px; }
+    .cta-sub { font-size: 16px; color: var(--text-muted); max-width: 480px; margin: 0 auto 40px; line-height: 1.7; }
+    .cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── CONTACT FORM ── */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+    .form-group input, .form-group select, .form-group textarea {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-group select option { background: var(--bg2); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .footer-logo span { color: var(--accent2); }
+    .footer-copy { font-size: 12px; color: var(--text-dim); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 12px; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text-muted); }
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--green);
+      border: 1px solid rgba(16,185,129,0.2);
+      background: rgba(16,185,129,0.06);
+      border-radius: 100px;
+      padding: 4px 10px;
+    }
+    .status-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+
+    /* ── SECTION HEADER ── */
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-header h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 900; margin-bottom: 16px; }
+    .section-header p { font-size: 16px; color: var(--text-muted); max-width: 520px; margin: 0 auto; line-height: 1.7; }
+
+    /* ── PROCESS ── */
+    .process-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+    .process-step { background: var(--bg2); padding: 36px 28px; position: relative; }
+    .process-step-num { font-family: var(--mono); font-size: 48px; font-weight: 900; color: rgba(108,99,255,0.12); line-height: 1; margin-bottom: 16px; }
+    .process-step-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .process-step-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      section { padding: 70px 0; }
+      .nav-links, .nav-cta .btn-ghost { display: none; }
+      .hamburger { display: flex; }
+      .hero-h1 { font-size: 38px; }
+      .hero-stats { gap: 24px; }
+      .ba-grid { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+      .team-grid { grid-template-columns: 1fr; max-width: 360px; }
+      .process-steps { grid-template-columns: repeat(2, 1fr); }
+      .cta-section { padding: 48px 28px; }
+      .footer-inner { flex-direction: column; text-align: center; }
+      .comparison-table { font-size: 12px; }
+      .comparison-table th, .comparison-table td { padding: 10px 12px; }
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── MOBILE NAV DRAWER ── */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 64px 0 0;
+      background: rgba(5,5,7,0.97);
+      backdrop-filter: blur(20px);
+      z-index: 99;
+      flex-direction: column;
+      padding: 32px 24px;
+      gap: 8px;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">PROXY<span>LABS</span></a>
+    <ul class="nav-links">
+      <li><a href="#solutions">Solutions</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#packages">Packages</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="tel:0676905443" class="btn btn-ghost" style="font-size:13px;padding:10px 18px;">067 690 5443</a>
+      <a href="https://wa.me/27676905443" target="_blank" class="btn btn-primary" style="padding:10px 18px;font-size:13px;">Book Strategy Call</a>
+    </div>
+    <div class="hamburger" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#solutions" onclick="toggleNav()">Solutions</a>
+  <a href="#process" onclick="toggleNav()">Process</a>
+  <a href="#packages" onclick="toggleNav()">Packages</a>
+  <a href="#about" onclick="toggleNav()">About</a>
+  <a href="#faq" onclick="toggleNav()">FAQ</a>
+  <a href="https://wa.me/27676905443" target="_blank" onclick="toggleNav()" style="color:var(--accent2);margin-top:16px;">Book Strategy Call →</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        <span>Actively onboarding SA businesses — 2026</span>
+      </div>
+      <h1 class="hero-h1">
+        Automate the work.<br>
+        <span class="grad">Scale without limits.</span>
+      </h1>
+      <p class="hero-sub">
+        Proxy Labs builds intelligent AI systems that eliminate 40+ hours of weekly manual work, cut costs by 60–80%, and give your team the leverage to grow exponentially.
+      </p>
+      <div class="hero-actions">
+        <a href="https://wa.me/27676905443" target="_blank" class="btn btn-wa">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Book Free Strategy Call
+        </a>
+        <a href="#solutions" class="btn btn-ghost">See How It Works</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-value" data-count="80">0%</div>
+          <div class="hero-stat-label">Average efficiency gain</div>
+        </div>
+        <div>
+          <div class="hero-stat-value" data-count="60">0%</div>
+          <div class="hero-stat-label">Cost reduction</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">2–4mo</div>
+          <div class="hero-stat-label">Average ROI timeline</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">24/7</div>
+          <div class="hero-stat-label">Automated execution</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="container">
+    <div class="trust-bar-inner">
+      <div class="trust-item">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        99.9% Accuracy
+      </div>
+      <div class="trust-sep"></div>
+      <div class="trust-item">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        2–4 Month ROI
+      </div>
+      <div class="trust-sep"></div>
+      <div class="trust-item">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        24/7 Operation
+      </div>
+      <div class="trust-sep"></div>
+      <div class="trust-item">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Replaces 3–8 Staff Roles
+      </div>
+      <div class="trust-sep"></div>
+      <div class="trust-item">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        South Africa Based
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BEFORE / AFTER -->
+<section id="solutions">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="label">The Transformation</div>
+      <h2>What changes when you<br><span class="grad">automate with AI</span></h2>
+      <p>Real numbers from businesses that made the switch from manual operations to AI-driven automation.</p>
+    </div>
+    <div class="ba-grid fade-in">
+      <div class="ba-col">
+        <div class="ba-col-header">
+          <div class="ba-tag before">BEFORE</div>
+          <span style="font-size:13px;color:var(--text-muted)">Manual operations</span>
+        </div>
+        <div class="ba-row"><span class="ba-row-label">Weekly manual work</span><span class="ba-row-value bad">40+ hours</span></div>
+        <div class="ba-row"><span class="ba-row-label">Human error rate</span><span class="ba-row-value bad">15%</span></div>
+        <div class="ba-row"><span class="ba-row-label">Processing time</span><span class="ba-row-value bad">2–5 days</span></div>
+        <div class="ba-row"><span class="ba-row-label">Team required</span><span class="ba-row-value bad">3–5 staff</span></div>
+        <div class="ba-row"><span class="ba-row-label">Monthly cost</span><span class="ba-row-value bad">R150,000</span></div>
+        <div class="ba-row"><span class="ba-row-label">Availability</span><span class="ba-row-value bad">Business hours</span></div>
+      </div>
+      <div class="ba-col after">
+        <div class="ba-col-header">
+          <div class="ba-tag after">AFTER</div>
+          <span style="font-size:13px;color:var(--text-muted)">AI automated</span>
+        </div>
+        <div class="ba-row"><span class="ba-row-label">Weekly manual work</span><span class="ba-row-value good">~2 hours oversight</span></div>
+        <div class="ba-row"><span class="ba-row-label">Error rate</span><span class="ba-row-value good">0.1%</span></div>
+        <div class="ba-row"><span class="ba-row-label">Processing time</span><span class="ba-row-value good">2–5 minutes</span></div>
+        <div class="ba-row"><span class="ba-row-label">Team required</span><span class="ba-row-value good">1 operator + AI</span></div>
+        <div class="ba-row"><span class="ba-row-label">Monthly cost</span><span class="ba-row-value good">R30,000</span></div>
+        <div class="ba-row"><span class="ba-row-label">Availability</span><span class="ba-row-value good">24 / 7 / 365</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section style="padding-top:0">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="label">What We Automate</div>
+      <h2>Four pillars of<br><span class="grad">intelligent automation</span></h2>
+      <p>Every system is custom-built for your business. No off-the-shelf templates — we engineer to your exact workflow.</p>
+    </div>
+    <div class="services-grid fade-in">
+      <div class="service-card">
+        <div class="service-num">01 / 04</div>
+        <div class="service-icon">🤖</div>
+        <div class="service-title">Customer Service AI</div>
+        <div class="service-roi">ROI: Replaces 3–8 staff roles</div>
+        <p class="service-desc">Deploy intelligent agents that handle customer queries, escalations, and support tickets across every channel — without a team clocking off at 5pm.</p>
+        <ul class="service-features">
+          <li>Intelligent chatbots & email automation</li>
+          <li>Smart ticket routing & escalation</li>
+          <li>Multi-language support</li>
+          <li>Sentiment analysis & priority scoring</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-num">02 / 04</div>
+        <div class="service-icon">📄</div>
+        <div class="service-title">Document Intelligence</div>
+        <div class="service-roi">ROI: 500–2,000 hours saved/month</div>
+        <p class="service-desc">AI reads, interprets and acts on your documents — invoices, contracts, compliance checks — at a speed and accuracy no human team can match.</p>
+        <ul class="service-features">
+          <li>Invoice & contract analysis</li>
+          <li>Automated data extraction</li>
+          <li>Compliance checking</li>
+          <li>Automated report generation</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-num">03 / 04</div>
+        <div class="service-icon">📈</div>
+        <div class="service-title">Sales & Marketing AI</div>
+        <div class="service-roi">ROI: 3–5× qualified lead volume</div>
+        <p class="service-desc">From lead scoring to personalised outreach, AI handles the repetitive sales work so your team focuses only on closing.</p>
+        <ul class="service-features">
+          <li>Lead scoring & qualification</li>
+          <li>Personalised outreach at scale</li>
+          <li>Pipeline automation</li>
+          <li>Predictive analytics & forecasting</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-num">04 / 04</div>
+        <div class="service-icon">⚙️</div>
+        <div class="service-title">Operations Automation</div>
+        <div class="service-roi">ROI: 30–50% cost reduction</div>
+        <p class="service-desc">Connect your tools, automate your workflows, and eliminate the repetitive back-office work that quietly drains your team's capacity every week.</p>
+        <ul class="service-features">
+          <li>Workflow orchestration</li>
+          <li>Cross-tool integration</li>
+          <li>Automated reporting</li>
+          <li>Quality control & monitoring</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section style="background:var(--bg2);padding:60px 0;">
+  <div class="container">
+    <div class="metrics-grid fade-in">
+      <div class="metric-card">
+        <div class="metric-value" data-count="80">0</div>
+        <div class="metric-label">% Average efficiency gain</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" data-count="99.9" data-suffix="%">0</div>
+        <div class="metric-label">Process accuracy</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" data-count="2000" data-prefix="">0</div>
+        <div class="metric-label">Hours saved per month</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" data-count="60">0</div>
+        <div class="metric-label">% Cost reduction</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="label">How It Works</div>
+      <h2>From strategy call to<br><span class="grad">live automation in weeks</span></h2>
+      <p>We move fast. Most clients see their first automation running within 4–6 weeks of kick-off.</p>
+    </div>
+    <div class="process-steps fade-in">
+      <div class="process-step">
+        <div class="process-step-num">01</div>
+        <div class="process-step-title">Discovery Call</div>
+        <div class="process-step-desc">We audit your current workflows, quantify the manual hours being lost, and identify the highest-leverage automation opportunities.</div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">02</div>
+        <div class="process-step-title">Custom Blueprint</div>
+        <div class="process-step-desc">Our AI architects design a bespoke automation system tailored to your tools, team, and growth objectives — no templates.</div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">03</div>
+        <div class="process-step-title">Build & Integrate</div>
+        <div class="process-step-desc">We build, test, and integrate your system with your existing software stack. Your team needs minimal technical involvement.</div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">04</div>
+        <div class="process-step-title">Launch & Scale</div>
+        <div class="process-step-desc">Go live with full monitoring dashboards and ongoing support. As your business grows, the system scales with it — no extra headcount needed.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="label">Client Results</div>
+      <h2>What our clients say<br>after going <span class="grad">AI-first</span></h2>
+    </div>
+    <div class="testimonials-grid fade-in">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"Within 8 weeks, our customer service team went from drowning in tickets to handling only escalations. Response times dropped from 18 hours to under 4 minutes. The ROI was undeniable within the first month."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">NK</div>
+          <div>
+            <div class="testimonial-name">Nandi Khumalo</div>
+            <div class="testimonial-role">Operations Director, Retail Group</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"We were processing 600+ invoices manually every month. Proxy Labs automated 95% of that work. The accuracy is better than what we had before, and we've redeployed two full-time staff to higher-value roles."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">RS</div>
+          <div>
+            <div class="testimonial-name">Ruan Smit</div>
+            <div class="testimonial-role">CFO, Logistics Company</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"Our sales pipeline was a mess — leads falling through the gaps, follow-ups missed. The AI system they built now scores, routes, and follows up every lead automatically. Our conversion rate is up 40%."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">TM</div>
+          <div>
+            <div class="testimonial-name">Thabo Molefe</div>
+            <div class="testimonial-role">CEO, Professional Services Firm</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES -->
+<section id="packages">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="label">Investment Packages</div>
+      <h2>Choose the scale<br>of your <span class="grad">transformation</span></h2>
+      <p>All packages include custom-built systems — no templates, no shortcuts. Performance-based fees mean our interests are fully aligned with yours.</p>
+    </div>
+    <div class="pricing-grid fade-in">
+      <!-- IGNITION -->
+      <div class="pricing-card">
+        <div class="pricing-tier">TIER 01</div>
+        <div class="pricing-name">Ignition</div>
+        <div class="pricing-price">R150k <span>– R350k</span></div>
+        <div class="pricing-perf">+ 15% performance fee over 18 months</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Single workflow automation</li>
+          <li><span class="check">✓</span> 3-month dedicated support</li>
+          <li><span class="check">✓</span> ROI dashboard & reporting</li>
+          <li><span class="check">✓</span> Team onboarding & training</li>
+          <li><span class="check">✓</span> Integration with 1 software stack</li>
+          <li><span class="cross" style="color:var(--text-dim)">✗</span> <span style="color:var(--text-dim)">Multi-system integration</span></li>
+          <li><span class="cross" style="color:var(--text-dim)">✗</span> <span style="color:var(--text-dim)">Custom AI agents</span></li>
+        </ul>
+        <a href="https://wa.me/27676905443" target="_blank" class="btn btn-ghost" style="width:100%;justify-content:center;">Start with Ignition</a>
+      </div>
+      <!-- MOMENTUM -->
+      <div class="pricing-card featured">
+        <div class="pricing-badge">MOST POPULAR</div>
+        <div class="pricing-tier">TIER 02</div>
+        <div class="pricing-name">Momentum</div>
+        <div class="pricing-price">R500k <span>– R1.2M</span></div>
+        <div class="pricing-perf">+ 18% performance fee over 24 months</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Multi-system integration</li>
+          <li><span class="check">✓</span> Custom AI agents built for you</li>
+          <li><span class="check">✓</span> 6-month dedicated support</li>
+          <li><span class="check">✓</span> Advanced analytics & forecasting</li>
+          <li><span class="check">✓</span> Unlimited workflow automations</li>
+          <li><span class="check">✓</span> Priority response SLA</li>
+          <li><span class="cross" style="color:var(--text-dim)">✗</span> <span style="color:var(--text-dim)">Full enterprise ecosystem</span></li>
+        </ul>
+        <a href="https://wa.me/27676905443" target="_blank" class="btn btn-primary" style="width:100%;justify-content:center;">Start with Momentum</a>
+      </div>
+      <!-- DOMINANCE -->
+      <div class="pricing-card">
+        <div class="pricing-tier">TIER 03</div>
+        <div class="pricing-name">Dominance</div>
+        <div class="pricing-price">R1.5M+</div>
+        <div class="pricing-perf">+ 20% performance fee over 24 months</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Complete AI ecosystem build</li>
+          <li><span class="check">✓</span> Enterprise-wide automation</li>
+          <li><span class="check">✓</span> 12-month premium support</li>
+          <li><span class="check">✓</span> Dedicated AI operations team</li>
+          <li><span class="check">✓</span> Custom model fine-tuning</li>
+          <li><span class="check">✓</span> Executive strategy sessions</li>
+          <li><span class="check">✓</span> White-glove implementation</li>
+        </ul>
+        <a href="https://wa.me/27676905443" target="_blank" class="btn btn-ghost" style="width:100%;justify-content:center;">Start with Dominance</a>
+      </div>
+    </div>
+
+    <!-- COMPARISON TABLE -->
+    <div class="fade-in" style="margin-top:40px;overflow-x:auto;">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Ignition</th>
+            <th style="color:var(--accent2)">Momentum</th>
+            <th>Dominance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feat-col">Automation workflows</td><td>1</td><td style="color:var(--accent2)">Unlimited</td><td>Unlimited</td></tr>
+          <tr><td class="feat-col">Custom AI agents</td><td><span class="cross-icon">✗</span></td><td style="color:var(--accent2)"><span class="check-icon">✓</span></td><td><span class="check-icon">✓</span></td></tr>
+          <tr><td class="feat-col">Software integrations</td><td>1 stack</td><td style="color:var(--accent2)">Multi-stack</td><td>Enterprise-wide</td></tr>
+          <tr><td class="feat-col">Dedicated support</td><td>3 months</td><td style="color:var(--accent2)">6 months</td><td>12 months</td></tr>
+          <tr><td class="feat-col">Analytics & reporting</td><td><span class="partial">Basic</span></td><td style="color:var(--accent2)"><span class="check-icon">✓</span> Advanced</td><td><span class="check-icon">✓</span> Enterprise</td></tr>
+          <tr><td class="feat-col">Custom model fine-tuning</td><td><span class="cross-icon">✗</span></td><td><span class="cross-icon">✗</span></td><td><span class="check-icon">✓</span></td></tr>
+          <tr><td class="feat-col">Executive strategy sessions</td><td><span class="cross-icon">✗</span></td><td><span class="cross-icon">✗</span></td><td><span class="check-icon">✓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--bg2)">
+  <div class="container" style="max-width:740px">
+    <div class="section-header fade-in">
+      <div class="label">Common Questions</div>
+      <h2>Everything you need<br>to <span class="grad">make a decision</span></h2>
+    </div>
+    <div class="faq-list fade-in">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          How long does implementation take?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Most clients have their first automation live within 4–6 weeks of kick-off. Full multi-system implementations (Momentum/Dominance) typically take 8–16 weeks depending on complexity. We provide a detailed timeline during the discovery call before any commitment.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          What does the performance fee mean exactly?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">The performance fee (15–20% depending on package) is calculated on the measurable cost savings and efficiency gains the automation delivers over the contract period. This means our income is directly tied to your results — if the automation doesn't perform, neither do we. Detailed metrics and calculation methodology are agreed upfront.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          What software does your AI integrate with?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">We integrate with most major business tools: CRMs (Salesforce, HubSpot), ERPs (SAP, Sage), accounting software (Xero, QuickBooks), communication platforms (Slack, Teams, email), custom databases, and thousands of other tools via API. If your software has an API or webhook capability, we can likely integrate it. We'll confirm compatibility during discovery.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Does my team need technical knowledge to use the systems?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">No. We build monitoring dashboards and control interfaces that are designed for non-technical operators. Your team oversees the system, reviews outputs, and handles true exceptions — everything else runs automatically. We provide full onboarding and training as part of every package.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          What if the automation makes a mistake?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">All systems include confidence scoring — when the AI is uncertain, it flags the task for human review instead of proceeding automatically. High-stakes actions have human-in-the-loop checkpoints built in. Our systems are also monitored continuously, and we respond to anomalies within hours.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Is my business data safe?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Data security is built into every system we deliver. We implement role-based access controls, encrypted data transit and storage, and full audit trails. We operate under strict confidentiality agreements and can accommodate data residency requirements for South African businesses.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Why is the minimum investment R150,000?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Custom AI automation — done properly — requires significant engineering time: discovery, architecture design, development, testing, integration, and training. Below a certain investment threshold, the ROI doesn't justify the complexity. The businesses that get the most from our work have meaningful manual workloads (40+ hours/week) where automation creates serious leverage.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="about">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="label">The Team</div>
+      <h2>Built by people who've<br><span class="grad">done this before</span></h2>
+      <p>Founded in 2024, Proxy Labs was built with a clear mission: give South African businesses access to the same AI leverage that global enterprises enjoy.</p>
+    </div>
+    <div class="team-grid fade-in">
+      <div class="team-card">
+        <div class="team-avatar">AS</div>
+        <div class="team-name">Aubrey Sebakeng</div>
+        <div class="team-role">CO-FOUNDER & AI ARCHITECT</div>
+        <p class="team-bio">Technical visionary with deep expertise in AI systems design, automation architecture, and large-scale workflow engineering.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">BE</div>
+        <div class="team-name">Basil Emekwuru</div>
+        <div class="team-role">CO-FOUNDER & GROWTH STRATEGIST</div>
+        <p class="team-bio">Strategic business leader focused on growth, market expansion, and ensuring every system delivers measurable, lasting ROI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding: 80px 0">
+  <div class="container">
+    <div class="cta-section fade-in">
+      <div class="label" style="justify-content:center">Get Started</div>
+      <h2 class="cta-h2">Ready to stop doing<br><span class="grad">what AI can do for you?</span></h2>
+      <p class="cta-sub">Book a free 30-minute strategy call. We'll audit your workflows, quantify your automation opportunity, and show you exactly what's possible — no obligation.</p>
+      <div class="cta-actions">
+        <a href="https://wa.me/27676905443" target="_blank" class="btn btn-wa" style="font-size:16px;padding:16px 32px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp Us Now
+        </a>
+        <a href="mailto:info@proxylabs.co.za" class="btn btn-ghost" style="font-size:16px;padding:16px 32px;">info@proxylabs.co.za</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">PROXY<span>LABS</span></div>
+      <div class="footer-copy">© 2026 Proxy Labs. All rights reserved.</div>
+      <div class="footer-links">
+        <a href="mailto:info@proxylabs.co.za">info@proxylabs.co.za</a>
+        <a href="tel:0676905443">067 690 5443</a>
+      </div>
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        All systems operational
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Scroll fade-in
+  const observer = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.1 }
+  );
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // ── Counter animation
+  function animateCount(el) {
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '%';
+    const duration = 1800;
+    const start = performance.now();
+    const isDecimal = target % 1 !== 0;
+
+    function step(now) {
+      const elapsed = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - elapsed, 3);
+      const value = target * eased;
+      el.textContent = isDecimal ? value.toFixed(1) + suffix : Math.floor(value).toLocaleString() + suffix;
+      if (elapsed < 1) requestAnimationFrame(step);
+      else el.textContent = (isDecimal ? target.toFixed(1) : target.toLocaleString()) + suffix;
+    }
+    requestAnimationFrame(step);
+  }
+
+  const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !e.target.dataset.animated) {
+        e.target.dataset.animated = true;
+        animateCount(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('[data-count]').forEach(el => {
+    el.textContent = '0' + (el.dataset.suffix || '%');
+    counterObserver.observe(el);
+  });
+
+  // ── FAQ toggle
+  function toggleFaq(el) {
+    const item = el.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // ── Mobile nav
+  function toggleNav() {
+    document.getElementById('mobileNav').classList.toggle('open');
+  }
+
+  // ── Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+</script>
+</body>
+</html>
